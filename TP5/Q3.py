@@ -4,8 +4,8 @@ from util import remove_ponctuation
 
 args = sys.argv
 
-corpus_path = "../corpus_en_200k.train.txt"
-output_path = "corpus_modifié.txt"
+corpus_path = "corpus.data"
+output_path = "corpus_mod_prep.data"
 patron_path = "patron.train.txt"
 nb_patrons = 50
 
@@ -23,7 +23,7 @@ if nb_patrons == -1:
     nb_patrons = len(patron_file)
 
 for i in range(nb_patrons):
-    if (len(patron_file[i].split(" "))) > 0:
+    if (len(patron_file[i].split(" "))) > 1:
         patron_map.add(patron_file[i][:-1])
 
 with open(corpus_path) as f:
@@ -72,6 +72,14 @@ with open(output_path) as f:
 
 replace_ponctuation(content)
 
+
+def split_word(input_word):
+    return_value = ""
+    for i in range(len(input_word)):
+        return_value += input_word[i] + " "
+    return return_value
+
+
 output = open(output_path, "w")
 for i in range(len(content)):
     output_line = ""
@@ -80,6 +88,7 @@ for i in range(len(content)):
     if len(input_line) > 2:
         if input_line[4] == "hyp\n":
             context = get_context(i, content)
+            word = split_word(input_line[1])
             output_line += str(i) + " , " + context[0] + " , " \
-                           + input_line[1] + " , " + context[1] + " , " + input_line[3] + " ."
+                           + input_line[1] + " , " + context[1] + " , " + input_line[2] + " , " + word + " , " + input_line[3] + " ."
             output.write(output_line + "\n")
